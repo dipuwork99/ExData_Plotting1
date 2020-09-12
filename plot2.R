@@ -1,0 +1,13 @@
+par(mar=c(5.1,4.1,4.1,2.1))
+par(mfrow =c(1,1)) 
+dt <- read.table("household_power_consumption.txt" , sep = ";", header = TRUE , na.strings="?")
+library(dplyr)
+library(lubridate)
+filteredData <- subset(dt , Date %in% c("1/2/2007","2/2/2007"))
+filteredData <-  filteredData %>% mutate(Date = as.Date(Date , format="%d/%m/%Y") , Global_active_power = as.numeric(Global_active_power))
+filteredData <-  filteredData %>% mutate(DateTime = as.POSIXct(paste(as.Date(Date) , Time)))
+filteredData <-  filteredData %>% mutate(Sub_metering_1 = as.numeric(Sub_metering_1) , Sub_metering_2 = as.numeric(Sub_metering_2) , Sub_metering_3 = as.numeric(Sub_metering_3))                     
+
+with(filteredData, {plot(Global_active_power~DateTime, type="l",ylab="Global Active Power (kilowatts)", xlab="")})
+dev.copy(png, file="plot2.png", height=480, width=480)
+dev.off()
